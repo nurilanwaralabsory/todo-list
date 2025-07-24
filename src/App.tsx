@@ -1,10 +1,18 @@
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import MainLayout from "./layouts/MainLayout";
 import React, { useEffect, useState } from "react";
 import { Badge } from "./components/ui/badge";
 import { Card, CardContent } from "./components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 
 interface Task {
   text: string;
@@ -14,7 +22,6 @@ interface Task {
 function App() {
   const [inputTask, setInputTask] = useState("");
 
-  // function yang diberikan ke dalam useState disebut LAZY INITIAL STATE. React akan menjalankan fungsi ini hanya 1x, yaitu saat komponen pertama kali di render untuk menentukan nilai awal dari state
   const [tasks, setTasks] = useState<Task[]>(() => {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
@@ -48,6 +55,13 @@ function App() {
     setTasks(newTasks);
   };
 
+  const handleDeleteTask = (taskIndex: number) => {
+    const newTasks = [...tasks];
+    newTasks.splice(taskIndex, 1);
+
+    setTasks(newTasks);
+  };
+
   return (
     <MainLayout>
       <div className="max-w-2xl mx-auto">
@@ -66,12 +80,28 @@ function App() {
         </form>
         <div className="mt-10">
           <div className="flex justify-between text-[#4EA8DE]">
-            <p>
-              Tugas dibuat{" "}
-              <Badge className="bg-gray-600 ml-1">{tasks.length}</Badge>
-            </p>
             <div>
-              Selesai{" "}
+              <p>
+                Task created{" "}
+                <Badge className="bg-gray-600 ml-1">{tasks.length}</Badge>
+              </p>
+              <Select>
+                <SelectTrigger
+                  className="w-[100px] border-none p-0 focus:ring-0 focus:ring-offset-0 focus:outline-none
+             focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
+                >
+                  <SelectValue placeholder="Filter" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#262626] border-[#333333] text-[#4EA8DE]">
+                  <SelectGroup>
+                    <SelectItem value="true">Complete</SelectItem>
+                    <SelectItem value="false">Incomplete</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              Done{" "}
               <Badge className="bg-gray-600 ml-1">
                 {" "}
                 {tasks.filter((task) => task.completed).length}
@@ -85,12 +115,14 @@ function App() {
               {tasks.map((task, index) => (
                 <li key={index}>
                   <Card className="rounded-[8px] bg-[#262626] border-[#333333]">
-                    <CardContent>
+                    <CardContent className="flex justify-between items-center">
                       <div className="flex items-center gap-x-4">
                         <input
                           type="checkbox"
+                          checked={task.completed}
                           onChange={() => handleToggleTask(index)}
-                          className="appearance-none h-6 w-6 shrink-0 border-2 border-[#4EA8DE] rounded-full cursor-pointer bg-center  checked:bg-[#5E60CE] checked:border-0 checked:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3d%220%200%2016%2016%22%20fill%3d%22white%22%20xmlns%3d%22http%3a//www.w3.org/2000/svg%22%3e%3cpath%20d%3d%22M12.207%204.793a1%201%200%20010%201.414l-5%205a1%201%200%2001-1.414%200l-2-2a1%201%200%20011.414-1.414L6.5%209.086l4.293-4.293a1%201%200%20011.414%200z%22/%3e%3c/svg%3e')]"
+                          className={`appearance-none h-6 w-6 shrink-0 border-2 border-[#4EA8DE] rounded-full cursor-pointer bg-center 
+                             checked:bg-[#5E60CE] checked:border-0 checked:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3d%220%200%2016%2016%22%20fill%3d%22white%22%20xmlns%3d%22http%3a//www.w3.org/2000/svg%22%3e%3cpath%20d%3d%22M12.207%204.793a1%201%200%20010%201.414l-5%205a1%201%200%2001-1.414%200l-2-2a1%201%200%20011.414-1.414L6.5%209.086l4.293-4.293a1%201%200%20011.414%200z%22/%3e%3c/svg%3e')]`}
                         />
                         <p
                           className={` ${
@@ -101,6 +133,12 @@ function App() {
                         >
                           {task.text}
                         </p>
+                      </div>
+                      <div>
+                        <Trash2
+                          className="text-gray-400 h-5 w-5 cursor-pointer"
+                          onClick={() => handleDeleteTask(index)}
+                        />
                       </div>
                     </CardContent>
                   </Card>
