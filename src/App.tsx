@@ -1,18 +1,10 @@
-import { PlusCircle, Trash2 } from "lucide-react";
+import { ClipboardList, PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import MainLayout from "./layouts/MainLayout";
 import React, { useEffect, useState } from "react";
 import { Badge } from "./components/ui/badge";
 import { Card, CardContent } from "./components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./components/ui/select";
 
 interface Task {
   text: string;
@@ -64,7 +56,7 @@ function App() {
 
   return (
     <MainLayout>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto px-2 sm:px-0">
         <form className=" -mt-6" onSubmit={handleSubmitTask}>
           <div className="flex gap-x-2 text-white">
             <Input
@@ -85,20 +77,6 @@ function App() {
                 Task created{" "}
                 <Badge className="bg-gray-600 ml-1">{tasks.length}</Badge>
               </p>
-              <Select>
-                <SelectTrigger
-                  className="w-[100px] border-none p-0 focus:ring-0 focus:ring-offset-0 focus:outline-none
-             focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
-                >
-                  <SelectValue placeholder="Filter" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#262626] border-[#333333] text-[#4EA8DE]">
-                  <SelectGroup>
-                    <SelectItem value="true">Complete</SelectItem>
-                    <SelectItem value="false">Incomplete</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
             </div>
             <div>
               Done{" "}
@@ -146,7 +124,17 @@ function App() {
               ))}
             </ul>
           ) : (
-            <p className="text-white">Belum ada tugas</p>
+            <div className="flex flex-col items-center justify-center mt-4 p-10">
+              <div>
+                <ClipboardList className="text-[#464646] w-20 h-20" />
+              </div>
+              <div className="my-4 text-center text-[#808080] ">
+                <p className="font-bold">
+                  You don't have any tasks listed yet.
+                </p>
+                <p>Create a task and organize your to-do items.</p>
+              </div>
+            </div>
           )}
         </div>
       </div>
